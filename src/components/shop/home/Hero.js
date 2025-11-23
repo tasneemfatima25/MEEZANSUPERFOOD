@@ -2,51 +2,76 @@ import React, { Fragment, useState, useEffect, useContext } from 'react'
 import { useHistory } from "react-router-dom";
 import Layout from "../layout";
 import { LayoutContext } from "../layout";
-import homeImage from "../../../assets/images/try.png"
-import { getAllProduct } from "../../admin/products/FetchApi";
+import slide1 from "../../../assets/images/slide1.png"
+import slide2 from "../../../assets/images/slide2.png"
+import slide3 from "../../../assets/images/slide3.png"
+import slide4 from "../../../assets/images/slide4.png"
+import { getAllCategory } from "../../admin/categories/FetchApi";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const HeroBanner = () => {
   const history = useHistory();
   const { data, dispatch } = useContext(LayoutContext);
-  const [products, setProducts] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("default");
+
+  const heroSlides = [slide1, slide2, slide3, slide4];
 
   useEffect(() => {
-    fetchProducts();
+    fetchCategories();
   }, []);
 
-  const fetchProducts = async () => {
+  // Auto-slide hero images every 4 seconds
+  useEffect(() => {
+    const slideInterval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 4000);
+
+    return () => clearInterval(slideInterval);
+  }, [heroSlides.length]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [categories, searchQuery, sortBy]);
+
+  const fetchCategories = async () => {
     try {
-      let responseData = await getAllProduct();
-      if (responseData && responseData.Products) {
-        setProducts(responseData.Products);
+      let responseData = await getAllCategory();
+      if (responseData && responseData.Categories) {
+        setCategories(responseData.Categories);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    if (products.length > 0) {
-      const interval = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
-      }, 3000);
-      return () => clearInterval(interval);
+  const applyFilters = () => {
+    let filtered = [...categories];
+
+    // Search filter
+    if (searchQuery.trim() !== "") {
+      filtered = filtered.filter(cat =>
+        cat.cName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (cat.cDescription && cat.cDescription.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
     }
-  }, [products]);
 
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 3) % products.length);
+    // Sort
+    if (sortBy === "name-asc") {
+      filtered.sort((a, b) => a.cName.localeCompare(b.cName));
+    } else if (sortBy === "name-desc") {
+      filtered.sort((a, b) => b.cName.localeCompare(a.cName));
+    }
+
+    setFilteredCategories(filtered);
   };
 
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 3 + products.length) % products.length);
-  };
-
-  const getVisibleProducts = () => {
-    if (products.length === 0) return [];
-    return products.slice(currentIndex, currentIndex + 6);
+  const resetFilters = () => {
+    setSearchQuery("");
+    setSortBy("default");
   };
 
   return (
@@ -57,21 +82,24 @@ const HeroBanner = () => {
 
       {/* Full Screen Background Image Hero Section */}
       <div className="relative h-[800px] w-full overflow-hidden">
-        {/* Background Image */}
+        {/* Background Image Slider */}
         <div className="absolute inset-0" style={{
-          backgroundColor: '#FAF8F5'
+          backgroundColor: '#FFFFFF'
         }}>
-          <img
-            src={homeImage}
-            alt="Home Background"
-            className="w-full h-full"
-            style={{
-              objectFit: 'cover',
-              objectPosition: 'center center',
-              transform: 'scale(1.00)',
-              opacity: '0.9'
-            }}
-          />
+          {heroSlides.map((slide, index) => (
+            <img
+              key={index}
+              src={slide}
+              alt={`Hero Slide ${index + 1}`}
+              className="absolute w-full h-full transition-opacity duration-1000"
+              style={{
+                objectFit: 'cover',
+                objectPosition: 'center center',
+                opacity: currentSlide === index ? '0.9' : '0',
+                zIndex: currentSlide === index ? 1 : 0
+              }}
+            />
+          ))}
         </div>
 
         {/* Text Content Overlay */}
@@ -94,7 +122,8 @@ const HeroBanner = () => {
             </h1>
 
             <button
-              className="px-12 py-5 rounded-full font-semibold text-lg relative overflow-hidden transition-all duration-200 hover:scale-105 active:translate-y-2"
+              onClick={() => history.push('/products')}
+              className="px-12 py-5 rounded-full font-semibold text-lg relative overflow-hidden transition-all duration-200 hover:scale-105 active:translate-y-2 cursor-pointer"
               style={{
                 background: '#708A58',
                 color: '#FFFFFF',
@@ -117,160 +146,164 @@ const HeroBanner = () => {
         </div>
       </div>
 
-      {/* Featured Products Grid */}
-      <div className="relative px-6 pb-24 pt-10" style={{
-        background: 'linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%)'
+      {/* Featured Categories Grid */}
+      <div className="relative px-6 pb-24 pt-16" style={{
+        background: 'linear-gradient(180deg, #FFFFFF 0%, #F5F9F3 100%)'
       }}>
-        <h2 className="text-5xl font-bold text-center mb-4" style={{
-          color: '#2C2C2C',
-          fontFamily: 'Georgia, serif',
-          textShadow: '0 2px 8px rgba(0,0,0,0.08)'
-        }}>
-          Our Products
-        </h2>
-        <p className="text-center text-lg mb-16" style={{ color: '#666666' }}>
-          Discover our handpicked selection of natural and healthy products
-        </p>
+        {/* Section Header */}
+        <div className="max-w-7xl mx-auto mb-16">
+          <h2 className="text-5xl md:text-6xl font-bold text-center mb-6" style={{
+            color: '#2C2C2C',
+            fontFamily: 'Georgia, serif',
+            textShadow: '0 2px 12px rgba(0,0,0,0.1)'
+          }}>
+            Shop by Category
+          </h2>
+          <p className="text-center text-lg md:text-xl mb-4 px-4" style={{
+            color: '#4A4A4A',
+            maxWidth: '800px',
+            margin: '0 auto 16px',
+            lineHeight: '1.7'
+          }}>
+            Browse our carefully curated categories to find exactly what you need. From ancient grains and superfoods
+            to natural sweeteners and premium oils — each category is filled with <span className="font-semibold" style={{ color: '#708A58' }}>quality products</span> that
+            bring health and vitality to your table.
+          </p>
 
-        {/* Products Grid with Navigation */}
-        <div className="relative max-w-7xl mx-auto">
-          {/* Previous Button */}
-          {products.length > 6 && (
-            <button
-              onClick={prevSlide}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-6 z-10 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
-              style={{
-                background: '#708A58',
-                color: '#FFFFFF',
-                boxShadow: '0 4px 15px rgba(112,138,88,0.4)'
-              }}
-            >
-              <ChevronLeft className="w-7 h-7" />
-            </button>
-          )}
-
-          {/* Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {getVisibleProducts().map((product, idx) => {
-            const apiURL = process.env.REACT_APP_API_URL;
-            const imageUrl = product.pImages && product.pImages.length > 0
-              ? `${apiURL}/uploads/products/${product.pImages[0]}`
-              : homeImage;
-
-            return (
-              <div
-                key={product._id}
-                className="group cursor-pointer transition-all duration-500 hover:scale-105 hover:-translate-y-2"
-                style={{
-                  background: '#FFFFFF',
-                  borderRadius: '24px',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
-                  border: '1px solid rgba(0,0,0,0.05)',
-                  overflow: 'hidden'
-                }}
-              >
-                {/* Top Colored Line */}
-                <div style={{
-                  height: '6px',
-                  background: `linear-gradient(90deg, ${idx % 2 === 0 ? '#708A58' : '#D4A574'} 0%, ${idx % 2 === 0 ? '#708A58' : '#D4A574'} 100%)`
-                }}></div>
-
-                {/* Product Image */}
-                <div className="relative overflow-hidden">
-                  <img
-                    src={imageUrl}
-                    alt={product.pName}
-                    className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  {product.pOffer > 0 && (
-                    <div
-                      className="absolute top-3 right-3 px-3 py-1 text-xs font-bold text-white"
-                      style={{
-                        background: '#D4A574',
-                        borderRadius: '20px',
-                        boxShadow: '0 4px 15px rgba(212,165,116,0.4)'
-                      }}>
-                      {product.pOffer}% OFF
-                    </div>
-                  )}
-                </div>
-
-                {/* Product Details */}
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2 truncate" style={{ color: '#2C2C2C' }}>
-                    {product.pName}
-                  </h3>
-                  <p className="text-sm mb-4 line-clamp-2" style={{ color: '#666666' }}>
-                    {product.pDescription}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-2xl font-bold" style={{ color: '#D4A574' }}>
-                      Rs. {product.pPrice}
-                    </span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-                        const isInCart = cart.find(item => item.id === product._id);
-
-                        if (!isInCart) {
-                          cart.push({
-                            id: product._id,
-                            quantitiy: 1,
-                            price: product.pPrice
-                          });
-                          localStorage.setItem("cart", JSON.stringify(cart));
-                          dispatch({ type: "addToCart", payload: cart });
-                          dispatch({ type: "cartProduct", payload: products });
-                        }
-                      }}
-                      className="px-5 py-2 text-sm font-semibold text-white transition-all duration-300 hover:scale-105"
-                      style={{
-                        background: '#708A58',
-                        borderRadius: '25px',
-                        boxShadow: '0 4px 15px rgba(112,138,88,0.3)'
-                      }}>
-                      {data.inCart && data.inCart.includes(product._id) ? '✓ Added' : 'Add to Cart'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          <div className="flex justify-center mb-6">
+            <div style={{
+              width: '120px',
+              height: '5px',
+              background: 'linear-gradient(90deg, #708A58 0%, #D4A574 100%)',
+              borderRadius: '3px'
+            }}></div>
           </div>
 
-          {/* Next Button */}
-          {products.length > 6 && (
-            <button
-              onClick={nextSlide}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 z-10 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
-              style={{
-                background: '#708A58',
-                color: '#FFFFFF',
-                boxShadow: '0 4px 15px rgba(112,138,88,0.4)'
-              }}
-            >
-              <ChevronRight className="w-7 h-7" />
-            </button>
-          )}
+          {/* Feature Badges */}
+          <div className="flex flex-wrap justify-center gap-3 mt-8">
+            <div className="flex items-center gap-2 px-4 py-2" style={{
+              background: 'rgba(112,138,88,0.1)',
+              borderRadius: '25px',
+              border: '1px solid rgba(112,138,88,0.2)'
+            }}>
+              <svg className="w-4 h-4" style={{ color: '#708A58' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-sm font-semibold" style={{ color: '#708A58' }}>100% Authentic</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2" style={{
+              background: 'rgba(212,165,116,0.1)',
+              borderRadius: '25px',
+              border: '1px solid rgba(212,165,116,0.2)'
+            }}>
+              <svg className="w-4 h-4" style={{ color: '#D4A574' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              <span className="text-sm font-semibold" style={{ color: '#D4A574' }}>Trusted Quality</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2" style={{
+              background: 'rgba(112,138,88,0.1)',
+              borderRadius: '25px',
+              border: '1px solid rgba(112,138,88,0.2)'
+            }}>
+              <svg className="w-4 h-4" style={{ color: '#708A58' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              <span className="text-sm font-semibold" style={{ color: '#708A58' }}>Made with Love</span>
+            </div>
+          </div>
         </div>
 
-        {/* View More Button - Show only if more than 6 products */}
-        {products.length > 6 && (
-          <div className="flex justify-center mt-12">
-            <button
-              onClick={() => history.push('/products')}
-              className="px-10 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105"
-              style={{
-                background: '#708A58',
-                color: '#FFFFFF',
-                boxShadow: '0 4px 15px rgba(168,197,160,0.4)'
-              }}
-            >
-              View More Products
-            </button>
+        {/* Categories Grid */}
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+            {categories && categories.length > 0 ? (
+              categories.map((category, idx) => {
+                const apiURL = process.env.REACT_APP_API_URL;
+                const imageUrl = category.cImage
+                  ? `${apiURL}/uploads/categories/${category.cImage}`
+                  : slide1;
+
+                return (
+                  <div
+                    key={category._id}
+                    onClick={() => history.push(`/products/category/${category._id}`)}
+                    className="group cursor-pointer transition-all duration-500"
+                    style={{
+                      background: '#FFFFFF',
+                      boxShadow: '0 10px 40px rgba(0,0,0,0.08)',
+                      border: '2px solid rgba(112,138,88,0.1)',
+                      overflow: 'hidden',
+                      borderRadius: '16px'
+                    }}
+                  >
+                    {/* Category Image with Overlay */}
+                    <div className="relative overflow-hidden" style={{ height: '280px' }}>
+                      <img
+                        src={imageUrl}
+                        alt={category.cName}
+                        className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+                      />
+                      {/* Gradient Overlay */}
+                      <div
+                        className="absolute inset-0 transition-opacity duration-500"
+                        style={{
+                          background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%)',
+                          opacity: '0.6'
+                        }}
+                      ></div>
+                      {/* Category Name on Image */}
+                      <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+                        <h3 className="text-3xl font-bold text-white mb-2" style={{
+                          textShadow: '0 2px 10px rgba(0,0,0,0.5)',
+                          fontFamily: 'Georgia, serif'
+                        }}>
+                          {category.cName}
+                        </h3>
+                        {category.cDescription && (
+                          <p className="text-sm text-white line-clamp-2 opacity-90" style={{
+                            textShadow: '0 1px 5px rgba(0,0,0,0.5)'
+                          }}>
+                            {category.cDescription}
+                          </p>
+                        )}
+                      </div>
+                      {/* Decorative Corner */}
+                      <div
+                        className="absolute top-4 right-4 w-12 h-12 rounded-full flex items-center justify-center"
+                        style={{
+                          background: idx % 2 === 0 ? '#708A58' : '#D4A574',
+                          boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                        }}
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M9 18l6-6-6-6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Hover Effect Bottom Bar */}
+                    <div
+                      className="transition-all duration-500 group-hover:scale-x-100"
+                      style={{
+                        height: '6px',
+                        background: `linear-gradient(90deg, ${idx % 2 === 0 ? '#708A58' : '#D4A574'} 0%, ${idx % 2 === 0 ? '#5A7A55' : '#C49564'} 100%)`,
+                        transform: 'scaleX(0)',
+                        transformOrigin: 'left'
+                      }}
+                    ></div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="col-span-full text-center py-16">
+                <div className="text-6xl mb-4">🏷️</div>
+                <p className="text-2xl font-semibold" style={{ color: '#2C2C2C' }}>No Categories Available</p>
+                <p className="text-lg mt-2" style={{ color: '#666666' }}>Check back soon for new categories</p>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   )

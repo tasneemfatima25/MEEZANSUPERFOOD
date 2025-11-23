@@ -137,60 +137,115 @@ const ProductList = ({ products }) => {
 
   return (
     <Fragment>
-      {/* Hero Section with 3D Text */}
+      {/* Hero Section with Breadcrumbs */}
       <section
-        className="relative pt-32 pb-20 px-6 overflow-hidden"
+        className="relative pt-24 pb-12 px-6 md:px-12 md:pt-32 lg:pt-28 overflow-hidden"
         style={{
-          background: 'linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%)'
+          background: 'linear-gradient(180deg, #F5F9F3 0%, #FFFFFF 100%)'
         }}>
 
-        {/* Decorative Background Elements */}
-        <div
-          className="absolute top-20 right-10 w-64 h-64 rounded-full opacity-10"
-          style={{
-            background: 'radial-gradient(circle, #708A58 0%, transparent 70%)',
-            filter: 'blur(60px)'
-          }}
-        />
-        <div
-          className="absolute bottom-10 left-10 w-96 h-96 rounded-full opacity-10"
-          style={{
-            background: 'radial-gradient(circle, #D4A574 0%, transparent 70%)',
-            filter: 'blur(80px)'
-          }}
-        />
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Breadcrumbs */}
+          <div className="flex items-center space-x-3 text-base md:text-lg mb-6">
+            <span
+              className="cursor-pointer transition-colors duration-200 hover:underline font-medium"
+              style={{ color: '#708A58' }}
+              onClick={(e) => history.push("/")}
+            >
+              Home
+            </span>
+            <span style={{ color: '#D4A574', fontSize: '20px' }}>›</span>
+            <span className="font-semibold" style={{ color: '#2C2C2C' }}>All Products</span>
+          </div>
 
-        <div className="max-w-7xl mx-auto text-center relative z-10">
+          {/* Page Title */}
           <h1
-            className="text-5xl md:text-7xl font-bold mb-6"
+            className="text-5xl md:text-6xl font-bold mb-4"
             style={{
               color: '#2C2C2C',
-              textShadow: '0 2px 8px rgba(0,0,0,0.08)',
               fontFamily: 'Georgia, serif',
-              letterSpacing: '0.5px'
+              lineHeight: '1.2'
             }}>
-            Our Products
+            Our Complete Product Range
           </h1>
+          <div style={{
+            width: '100px',
+            height: '5px',
+            background: 'linear-gradient(90deg, #708A58 0%, #D4A574 100%)',
+            borderRadius: '3px',
+            marginBottom: '20px'
+          }}></div>
 
+          {/* Engaging Description */}
           <p
-            className="text-lg md:text-xl max-w-2xl mx-auto mb-6"
+            className="text-lg md:text-xl leading-relaxed mb-4"
             style={{
-              color: '#666666',
-              textShadow: '0 1px 2px rgba(0,0,0,0.05)'
+              color: '#4A4A4A',
+              maxWidth: '900px',
+              lineHeight: '1.8'
             }}>
-            Discover our premium collection of natural and nutritious products
+            Welcome to <span className="font-semibold" style={{ color: '#708A58' }}>Meezan Super Food</span> — your trusted source for authentic,
+            nutritious, and wholesome products. From traditional grains to modern superfoods, we bring you nature's finest offerings
+            to support your healthy lifestyle journey.
           </p>
 
-          <div
-            className="inline-block px-5 py-2 text-sm font-semibold"
+          <p
+            className="text-base md:text-lg mb-6"
             style={{
-              background: '#708A58',
-              color: '#FFFFFF',
-              borderRadius: '25px',
-              border: '1px solid rgba(168,197,160,0.3)',
-              boxShadow: '0 4px 15px rgba(168,197,160,0.3)'
+              color: '#666666',
+              maxWidth: '850px',
+              lineHeight: '1.7'
             }}>
-            {products ? products.length : 0} Products Available
+            Every product in our collection is carefully sourced and quality-tested to ensure you receive only the best.
+            Whether you're looking for daily essentials or specialty items, we have something perfect for every health-conscious home.
+          </p>
+
+          {/* Stats and Features */}
+          <div className="flex flex-wrap gap-4 items-center mb-6">
+            <div
+              className="px-5 py-2 text-sm font-semibold"
+              style={{
+                background: '#708A58',
+                color: '#FFFFFF',
+                borderRadius: '25px',
+                border: '1px solid rgba(168,197,160,0.3)',
+                boxShadow: '0 4px 15px rgba(168,197,160,0.3)'
+              }}>
+              {products ? products.length : 0} Products Available
+            </div>
+
+            <div className="flex items-center gap-2 px-4 py-2" style={{
+              background: 'rgba(112,138,88,0.1)',
+              borderRadius: '25px',
+              border: '1px solid rgba(112,138,88,0.2)'
+            }}>
+              <svg className="w-5 h-5" style={{ color: '#708A58' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-sm font-semibold" style={{ color: '#708A58' }}>Certified Organic</span>
+            </div>
+
+            <div className="flex items-center gap-2 px-4 py-2" style={{
+              background: 'rgba(212,165,116,0.1)',
+              borderRadius: '25px',
+              border: '1px solid rgba(212,165,116,0.2)'
+            }}>
+              <svg className="w-5 h-5" style={{ color: '#D4A574' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-sm font-semibold" style={{ color: '#D4A574' }}>Best Prices</span>
+            </div>
+
+            <div className="flex items-center gap-2 px-4 py-2" style={{
+              background: 'rgba(112,138,88,0.1)',
+              borderRadius: '25px',
+              border: '1px solid rgba(112,138,88,0.2)'
+            }}>
+              <svg className="w-5 h-5" style={{ color: '#708A58' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span className="text-sm font-semibold" style={{ color: '#708A58' }}>Fast Delivery</span>
+            </div>
           </div>
         </div>
       </section>

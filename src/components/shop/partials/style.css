@@ -8,3 +8,13 @@
   flex-direction: column;
   transition: all 1s;
 }
+
+/* Marquee Animation for Offer Bar */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}

@@ -1,14 +1,15 @@
-import React from "react";
+import React, { Fragment } from "react";
+import Layout from "../layout";
 
-const TermsOfService = () => {
+const TermsOfServiceContent = () => {
   return (
     <div className="bg-[#F9FAF9] text-[#2C2C2C] min-h-screen py-16 px-6 sm:px-10 lg:px-24">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-10">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-10 mt-20">
         <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6 text-[#708A58]">
           Terms of Service
         </h1>
         <p className="text-center text-sm text-gray-500 mb-10">
-          Last updated: October 22, 2025
+          
         </p>
 
         <section className="space-y-6 text-gray-700 leading-relaxed">
@@ -107,6 +108,14 @@ const TermsOfService = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const TermsOfService = () => {
+  return (
+    <Fragment>
+      <Layout children={<TermsOfServiceContent />} />
+    </Fragment>
   );
 };
 

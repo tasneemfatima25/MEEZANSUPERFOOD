@@ -12,8 +12,17 @@ const Navber = () => {
   const { data, dispatch } = useContext(LayoutContext);
   const [isScrolled, setIsScrolled] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   const dropdownRef = useRef(null);
+
+  const offerMessages = [
+    "🎉 Free Delivery on Orders Above ₹499",
+    "💝 Use Code MEEZAN10 for 10% OFF on First Order",
+    "🚚 Same Day Delivery Available in Select Areas",
+    "🌟 Fresh & Organic Products Delivered to Your Doorstep",
+    "🎁 Special Discounts on Bulk Orders"
+  ];
 
   // Scroll effect
   useEffect(() => {
@@ -50,11 +59,33 @@ const Navber = () => {
   return (
     <Fragment>
       {/* Top Offer Bar */}
-<div className="fixed top-0 left-0 w-full z-40 bg-[#708A58] text-white text-sm font-medium text-center py-2 overflow-hidden whitespace-nowrap">
-  <div className="inline-block animate-[marquee_15s_linear_infinite]">
-    🎉 Free Delivery on Orders Above ₹499 • Use Code <span className="font-semibold">MEEZAN10</span> for 10% OFF • New Arrivals Available Now 🚚
-  </div>
-</div>
+      <div
+        className="fixed top-0 left-0 w-full z-40 text-white text-sm font-medium text-center py-2.5 overflow-hidden"
+        style={{
+          background: 'linear-gradient(90deg, #708A58 0%, #5A7A55 50%, #708A58 100%)',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+        }}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        <div
+          className="inline-block whitespace-nowrap"
+          style={{
+            animation: isPaused ? 'none' : 'marquee 25s linear infinite'
+          }}
+        >
+          {offerMessages.map((msg, idx) => (
+            <span key={idx} className="mx-8">
+              {msg} <span className="mx-2">•</span>
+            </span>
+          ))}
+          {offerMessages.map((msg, idx) => (
+            <span key={`duplicate-${idx}`} className="mx-8">
+              {msg} <span className="mx-2">•</span>
+            </span>
+          ))}
+        </div>
+      </div>
       <nav
         className="fixed mt-8 w-full z-30 transition-all duration-300"
         style={{

@@ -14,13 +14,15 @@ const Footer = (props) => {
   };
 
   const handleCustomerServiceClick = (link) => {
-    if (link === 'FAQs') history.push('/faq');
+    if (link === 'My Account') history.push('/user/profile');
+    else if (link === 'Shipping Info') history.push('/shipping-info');
+    else if (link === 'Returns') history.push('/returns');
+    else if (link === 'FAQs') history.push('/faq');
   };
 
   const handleBottomLinkClick = (link) => {
     if (link === 'Privacy Policy') history.push('/privacy-policy');
     else if (link === 'Terms of Service') history.push('/term-condition');
-    else if (link === 'Sitemap') history.push('/sitemap');
   };
 
   return (
@@ -181,7 +183,7 @@ const Footer = (props) => {
                 © {moment().format("YYYY")} Meezan Super Food. All rights reserved.
               </p>
               <div className="flex space-x-6">
-                {['Privacy Policy', 'Terms of Service', 'Sitemap'].map((link, idx) => (
+                {['Privacy Policy', 'Terms of Service'].map((link, idx) => (
                   <span key={idx} className="text-sm cursor-pointer transition-colors duration-200 hover:text-white" style={{
                     color: 'rgba(255, 255, 255, 0.7)'
                   }} onClick={() => handleBottomLinkClick(link)}>

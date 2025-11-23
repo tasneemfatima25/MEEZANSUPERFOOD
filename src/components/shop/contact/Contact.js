@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock } from 'lucide-react';
 import { Navber } from '../partials';
 
 const ContactPage = () => {
+  const history = useHistory();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,22 +34,84 @@ const ContactPage = () => {
         minHeight: '100vh'
       }}>
         {/* Hero Section */}
-        <section className="relative min-h-[40vh] flex flex-col items-center justify-center text-center overflow-hidden px-6 py-20" style={{
-          background: 'linear-gradient(135deg, #FFFFFF 0%, #FAF8F5 100%)'
+        <section className="relative min-h-[50vh] flex flex-col items-center justify-center text-center overflow-hidden px-6 py-24" style={{
+          background: 'linear-gradient(135deg, #F5F9F3 0%, #FFFFFF 100%)'
         }}>
-          <h1 className="text-6xl md:text-7xl font-bold mb-6" style={{
-            color: '#4A4A4A',
-            textShadow: '0 4px 15px rgba(0,0,0,0.1)',
-            fontFamily: 'Georgia, serif'
+          {/* Breadcrumb */}
+          <div className="flex items-center space-x-3 text-base md:text-lg mb-8">
+            <span
+              className="cursor-pointer transition-colors duration-200 hover:underline font-medium"
+              style={{ color: '#708A58' }}
+              onClick={() => history.push('/')}
+            >
+              Home
+            </span>
+            <span style={{ color: '#D4A574', fontSize: '20px' }}>›</span>
+            <span className="font-semibold" style={{ color: '#2C2C2C' }}>Contact Us</span>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-bold mb-6" style={{
+            color: '#2C2C2C',
+            textShadow: '0 2px 8px rgba(0,0,0,0.08)',
+            fontFamily: 'Georgia, serif',
+            lineHeight: '1.2'
           }}>
-            Get In <span style={{ color: '#D4A574' }}>Touch</span>
+            Get In <span style={{ color: '#708A58' }}>Touch</span> <span style={{ color: '#D4A574' }}>With Us</span>
           </h1>
-          <p className="text-lg md:text-xl max-w-2xl" style={{
-            color: '#666666',
-            textShadow: '0 2px 8px rgba(0,0,0,0.05)'
+
+          <div style={{
+            width: '140px',
+            height: '5px',
+            background: 'linear-gradient(90deg, #708A58 0%, #D4A574 100%)',
+            borderRadius: '3px',
+            margin: '0 auto 24px'
+          }}></div>
+
+          <p className="text-xl md:text-2xl max-w-3xl mb-6 leading-relaxed" style={{
+            color: '#4A4A4A',
+            lineHeight: '1.8'
           }}>
-            We'd love to hear from you! Reach out to us for any queries or feedback.
+            We're here to help! Whether you have questions about our products, need assistance with an order,
+            or simply want to share your feedback — <span className="font-semibold" style={{ color: '#708A58' }}>we'd love to hear from you</span>.
           </p>
+
+          <p className="text-lg md:text-xl max-w-2xl mb-8" style={{
+            color: '#666666',
+            lineHeight: '1.7'
+          }}>
+            Our dedicated team at <span className="font-semibold" style={{ color: '#D4A574' }}>Meezan Super Food</span> is committed to providing you with
+            exceptional service and support. Reach out to us through any of the channels below, and we'll get back to you as soon as possible.
+          </p>
+
+          {/* Quick Contact Badges */}
+          <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex items-center gap-2 px-5 py-3" style={{
+              background: 'rgba(112,138,88,0.1)',
+              borderRadius: '30px',
+              border: '2px solid rgba(112,138,88,0.2)'
+            }}>
+              <MessageCircle className="w-5 h-5" style={{ color: '#708A58' }} />
+              <span className="text-sm font-bold" style={{ color: '#708A58' }}>Quick Response</span>
+            </div>
+            <div className="flex items-center gap-2 px-5 py-3" style={{
+              background: 'rgba(212,165,116,0.1)',
+              borderRadius: '30px',
+              border: '2px solid rgba(212,165,116,0.2)'
+            }}>
+              <Clock className="w-5 h-5" style={{ color: '#D4A574' }} />
+              <span className="text-sm font-bold" style={{ color: '#D4A574' }}>24/7 Support</span>
+            </div>
+            <div className="flex items-center gap-2 px-5 py-3" style={{
+              background: 'rgba(112,138,88,0.1)',
+              borderRadius: '30px',
+              border: '2px solid rgba(112,138,88,0.2)'
+            }}>
+              <svg className="w-5 h-5" style={{ color: '#708A58' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-sm font-bold" style={{ color: '#708A58' }}>Friendly Team</span>
+            </div>
+          </div>
         </section>
 
         {/* Contact Info Cards */}
