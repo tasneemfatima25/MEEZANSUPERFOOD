@@ -1,0 +1,14 @@
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+Allow: /
+
+# Pages not for indexing
+Disallow: /admin/
+Disallow: /user/
+Disallow: /checkout/
+
+# Correct sitemap URL
+Sitemap: https://www.meezansuperfoods.com/sitemap.xml
+
+Host: https://www.meezansuperfoods.com
