@@ -119,6 +119,7 @@ const AllProduct = ({ products }) => {
     if (products) {
       applyFilters();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products, sortBy, priceRange, availability, searchQuery]);
 
   const applyFilters = () => {

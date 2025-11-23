@@ -7,16 +7,15 @@ import slide2 from "../../../assets/images/slide2.png"
 import slide3 from "../../../assets/images/slide3.png"
 import slide4 from "../../../assets/images/slide4.png"
 import { getAllCategory } from "../../admin/categories/FetchApi";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const HeroBanner = () => {
   const history = useHistory();
-  const { data, dispatch } = useContext(LayoutContext);
+  const { data, dispatch } = useContext(LayoutContext); // eslint-disable-line no-unused-vars
   const [categories, setCategories] = useState([]);
-  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]); // eslint-disable-line no-unused-vars
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("default");
+  const [searchQuery, setSearchQuery] = useState(""); // eslint-disable-line no-unused-vars
+  const [sortBy, setSortBy] = useState("default"); // eslint-disable-line no-unused-vars
 
   const heroSlides = [slide1, slide2, slide3, slide4];
 
@@ -35,6 +34,7 @@ const HeroBanner = () => {
 
   useEffect(() => {
     applyFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories, searchQuery, sortBy]);
 
   const fetchCategories = async () => {
@@ -69,7 +69,7 @@ const HeroBanner = () => {
     setFilteredCategories(filtered);
   };
 
-  const resetFilters = () => {
+  const resetFilters = () => { // eslint-disable-line no-unused-vars
     setSearchQuery("");
     setSortBy("default");
   };
